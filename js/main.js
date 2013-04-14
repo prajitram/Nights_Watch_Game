@@ -23,6 +23,17 @@ init();
 })();
 
 function init(){
+
+	var graphWithWeight = new Graph([
+        [1,1,20,30],
+        [1,10,1.3,0],
+        [1,1,1,1]
+    ]);
+    var startWithWeight = graphWithWeight.nodes[0][0];
+    var endWithWeight = graphWithWeight.nodes[1][2];
+    var resultWithWeight = astar.search(graphWithWeight.nodes, startWithWeight, endWithWeight, false);
+
+    console.log(resultWithWeight);
 	canvas = document.createElement("canvas");
 	ctx = canvas.getContext("2d");
 	heightSquares = 35, widthSquares = 35;
@@ -47,9 +58,13 @@ function init(){
 
 	for (i = 0; i < widthSquares; i++){
 		for (var j = 0; j < heightSquares; j++){
-			grid[i][j] = true;
+			grid[i][j] = 1;
 		}
 	}
+
+	grid[34][8] = -1000;
+
+	printGrid(grid);
 
 	guard = new Guard(20, 20, dx, dy);
 	
@@ -71,6 +86,25 @@ function init(){
 	drawEnv();
 }
 
+function printGrid(g){
+	var r = "window.grid = [\n";
+	//console.log("grid = [");
+	for (var i = 0; i < g.length; i++){
+		r += "\t\t\t   [";
+		for (var j = 0; j < g[i].length; j++){
+			r += g[i][j];
+			if (j != g[i].length-1)
+				r += ", ";
+		}
+		r += "]";
+		if (i != g.length-1)
+			r += ",";
+		r += '\n';
+	}
+	r += "\t\t     ];"
+	console.log(r);
+}
+
 
 function changeWalls(e){
 	var x = e.offsetX, y = e.offsetY;
@@ -78,8 +112,9 @@ function changeWalls(e){
 		var posx = Math.floor(x / (gridWidth/widthSquares));
 		var posy = Math.floor(y / (gridHeight/heightSquares));
 		if (action == 'WALL'){
-			grid[posx][posy] = !grid[posx][posy];
+			grid[posx][posy] = 1 - grid[posx][posy];
 			path = guard.recalc(new Graph(grid));
+			printGrid(grid);
 		}
 		else if (action == 'MARKER'){
 			//console.log(posx + " " + posy);

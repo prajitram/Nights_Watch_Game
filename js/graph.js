@@ -9,6 +9,8 @@ var GraphNodeType = {
     WALL: 0 
 };
 
+// Higher weights means avoid the spot. (i.e. go through node with 1 weight as opposed to 12 weight)
+
 // Creates a Graph class used in the astar search algorithm.
 function Graph(grid) {
     var nodes = [];
